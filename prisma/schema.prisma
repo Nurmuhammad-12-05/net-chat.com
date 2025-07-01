@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPERADMIN
+}
+
+enum EventCategory {
+  TECHNOLOGY
+  DESIGN
+  ENTREPRENEURSHIP
+  MARKETING
+  EDUCATION
+  NETWORKING
+}
+
+enum EventStatus {
+  ACTIVE
+  CANCELLED
+  COMPLETED
+}
+
+enum ChatType {
+  DIRECT
+  GROUP
+}
+
+model User {
+  id          String     @id @default(uuid())
+  email       String     @unique
+  password    String
+  name        String?
+  avatar      String?
+  location    String?
+  bio         String?
+  role        UserRole   @default(USER)
+  status      UserStatus @default(ACTIVE)
+  isOnline    Boolean    @default(false)
+  lastSeen    DateTime?    
+  joinDate    DateTime @default(now())     
+  connections Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  skills      String[]   @default([])
+  tags        String[]   @default([])
+
+  organizedEvents     Event[]              @relation("EventOrganizer")
+  eventRegistrations  EventRegistration[]
+  sentMessages        Message[]            @relation("MessageSender")
+  chatParticipants    ChatParticipant[]
+
+  @@index([email])
+  @@index([status])
+  @@index([isOnline])
+
+  @@map("users")
+}
+
+model Event {
+  id          String        @id @default(uuid())
+  title       String
+  description String?
+  date        String        
+  time        String        
+  location    String
+  category    EventCategory
+  status      EventStatus   @default(ACTIVE)
+  attendees   Int           @default(0)
+  
+  organizerId String
+  organizer   User          @relation("EventOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  registrations EventRegistration[]
+
+  @@index([date])
+  @@index([category])
+  @@index([status])
+
+  @@map("events")
+}
+
+model EventRegistration {
+  id          String   @id @default(uuid())
+  userId      String
+  eventId     String
+  registeredAt DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@map("event_registrations")
+}
+
+model Chat {
+  id          String    @id @default(uuid())
+  name        String?  
+  type        ChatType
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  participants ChatParticipant[]
+  messages     Message[]
+
+  @@map("chats")
+}
+
+model ChatParticipant {
+  id        String   @id @default(uuid())
+  chatId    String
+  userId    String
+  joinedAt  DateTime @default(now())
+  
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+  @@map("chat_participants")
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  content     String
+  
+  chatId      String
+  senderId    String
+  
+  read        Boolean  @default(false)
+  
+  timestamp   DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender      User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([chatId])
+  @@index([senderId])
+  @@index([timestamp])
+
+  @@map("messages")
+}
+
+
+
