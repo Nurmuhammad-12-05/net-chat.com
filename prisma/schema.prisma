@@ -186,7 +186,7 @@ model Post {
   id          String   @id @default(uuid())
   title       String
   description String
-  tags        String[]   // taglar: masalan ['frontend', 'internship']
+  tags        String[]   
   authorId    String
   author      User      @relation(fields: [authorId], references: [id])
   createdAt   DateTime @default(now())
