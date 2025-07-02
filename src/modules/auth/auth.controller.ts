@@ -1,16 +1,18 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Post,
   Put,
+  Req,
   Res,
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateRegisterDto } from './dto/create.register.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { CreateLoginDto } from './dto/create.login.dto';
 import { RoleGuard } from 'src/common/guard/role.guard';
 import { UpdateUserRoleDto } from './dto/update.user.role.dto';
@@ -63,6 +65,15 @@ export class AuthController {
     });
 
     return { message: 'Logged out successfully' };
+  }
+
+  @Get('/me')
+  async me(@Req() req: Request) {
+    const userId = req['userId'];
+
+    const user = await this.authService.me(userId);
+
+    return { user };
   }
 
   @Put('/add-admin/:id')

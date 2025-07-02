@@ -26,6 +26,7 @@ export class AuthService {
       data: {
         email: createRegisterDto.email,
         password: hashPassword,
+        name: createRegisterDto.name,
       },
     });
 
@@ -59,6 +60,22 @@ export class AuthService {
     });
 
     return access_token;
+  }
+
+  async me(userId: string) {
+    const findUser = await this.db.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+      },
+    });
+
+    if (!findUser) throw new ConflictException('User not found');
+
+    return findUser;
   }
 
   async updateUserRole(updateUserRoleDto: UpdateUserRoleDto, id: string) {

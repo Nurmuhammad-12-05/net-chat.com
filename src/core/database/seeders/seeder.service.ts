@@ -28,6 +28,7 @@ export class SeederService implements OnModuleInit {
     if (!findEmail) {
       await this.db.prisma.user.create({
         data: {
+          name: 'Bobur',
           email: email,
           password: hashPassword,
           role: 'SUPERADMIN',
