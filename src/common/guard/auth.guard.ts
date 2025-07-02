@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
@@ -55,7 +56,7 @@ export class AuthGuard implements CanActivate {
         return true;
       }
     } catch (error) {
-      throw new InternalServerErrorException('Token invalide.!!');
+      throw new BadRequestException('Token invalide.!!');
     }
   }
 }

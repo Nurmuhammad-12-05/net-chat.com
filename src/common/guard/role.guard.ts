@@ -1,11 +1,10 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
 import { DatabaseService } from 'src/core/database/database.service';
 
 @Injectable()
@@ -32,7 +31,7 @@ export class RoleGuard implements CanActivate {
     ]);
 
     if (!role.includes(userRole)) {
-      throw new InternalServerErrorException('Role invalide.!!');
+      throw new BadRequestException('Role invalide.!!');
     }
 
     return true;
