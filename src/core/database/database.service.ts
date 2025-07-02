@@ -13,7 +13,26 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   private readonly logger: Logger;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = new PrismaClient().$extends({
+      result: {
+        user: {
+          imageUrl: {
+            needs: {
+              avatar: true,
+            },
+            compute(userFiles) {
+              if (!userFiles.avatar) return null;
+
+              const url = process.env.AWS_CLOUDFRONT_URL;
+
+              const imageUrl = `${url}/${userFiles.avatar}`;
+
+              return imageUrl;
+            },
+          },
+        },
+      },
+    }) as unknown as PrismaClient;
 
     this.logger = new Logger(DatabaseService.name);
   }

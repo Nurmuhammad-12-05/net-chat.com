@@ -29,6 +29,7 @@ export class SeederService implements OnModuleInit {
       await this.db.prisma.user.create({
         data: {
           name: 'Bobur',
+          username: 'bobur_12',
           email: email,
           password: hashPassword,
           role: 'SUPERADMIN',

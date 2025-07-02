@@ -16,6 +16,7 @@ enum UserStatus {
 enum UserRole {
   USER
   ADMIN
+  COMPANY
   SUPERADMIN
 }
 
@@ -44,6 +45,7 @@ model User {
   email       String     @unique
   password    String
   name        String?
+  username    String?     @unique
   avatar      String?
   location    String?
   bio         String?
@@ -63,8 +65,10 @@ model User {
   eventRegistrations  EventRegistration[]
   sentMessages        Message[]            @relation("MessageSender")
   chatParticipants    ChatParticipant[]
+  company Vacancy[]
 
   @@index([email])
+  @@index([username])
   @@index([status])
   @@index([isOnline])
 
@@ -160,4 +164,18 @@ model Message {
 }
 
 
+
+model Vacancy {
+  id          String        @id @default(uuid())
+  title       String
+  description String
+  location    String
+  salary      Int?
+  companyId   String
+  company     User          @relation(fields: [companyId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("vacancys")
+}
 
