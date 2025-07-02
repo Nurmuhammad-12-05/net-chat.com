@@ -57,7 +57,7 @@ export class UsersService {
 
     const whereCondition = orConditions.length > 0 ? { OR: orConditions } : {};
 
-    return this.db.prisma.user.findMany({
+    return await this.db.prisma.user.findMany({
       where: whereCondition,
       orderBy: {
         [sortBy]: order.trim(),
@@ -303,7 +303,7 @@ export class UsersService {
   }
 
   async updateAvatar(userId: string, avatar: string) {
-    return this.db.prisma.user.update({
+    return await this.db.prisma.user.update({
       where: { id: userId },
       data: { avatar },
     });

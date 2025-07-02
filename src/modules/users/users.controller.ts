@@ -29,12 +29,12 @@ export class UsersController {
 
   @Get('/search')
   async searchUsers(@Query() query: SearchUserDto) {
-    return this.usersService.searchUsers(query);
+    return await this.usersService.searchUsers(query);
   }
 
   @Get('/username')
   async searchByUsername(@Query() query: SearchByUsernameDto) {
-    return this.usersService.searchByUsername(query);
+    return await this.usersService.searchByUsername(query);
   }
 
   @Get()

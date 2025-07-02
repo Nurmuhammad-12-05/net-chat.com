@@ -1,7 +1,55 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { MessageService } from './message.service';
+import { GetMessagesQueryDto } from './dto/get.messages.query.chat.dto';
+import { Request } from 'express';
+import { CreateMessageDto } from './dto/create.message.dto';
+import { UpdateMessageDto } from './dto/update.message.dto';
 
-@Controller('message')
+@Controller('/message')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
+
+  @Get(':id/messages')
+  async getChatMessages(
+    @Param('id') chatId: string,
+    @Query() query: GetMessagesQueryDto,
+  ) {
+    return await this.messageService.getMessagesByChatId(chatId, query);
+  }
+
+  @Post(':id/messages')
+  async sendMessage(
+    @Param('id') chatId: string,
+    @Body() dto: CreateMessageDto,
+    @Req() req: Request,
+  ) {
+    const userId = req['userId'];
+    return await this.messageService.sendMessage(chatId, userId, dto);
+  }
+
+  @Put(':id')
+  async updateMessage(
+    @Param('id') id: string,
+    @Body() dto: UpdateMessageDto,
+    @Req() req: Request,
+  ) {
+    const userId = req['userId'];
+    return await this.messageService.updateMessage(id, userId, dto);
+  }
+
+  @Delete(':id')
+  async deleteMessage(@Param('id') id: string, @Req() req: Request) {
+    const userId = req['userId'];
+    return await this.messageService.deleteMessage(id, userId);
+  }
 }
