@@ -7,6 +7,7 @@ import { ChatModule } from './modules/chat/chat.module';
 import { MessageModule } from './modules/message/message.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthGuard } from './common/guard/auth.guard';
+import { AdminModule } from './modules/admin/admin.module';
 import TransformIntersector from './common/intersector/transform.intersector.service';
 
 @Module({
@@ -17,6 +18,7 @@ import TransformIntersector from './common/intersector/transform.intersector.ser
     EventsModule,
     ChatModule,
     MessageModule,
+    AdminModule,
   ],
   providers: [
     {

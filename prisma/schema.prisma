@@ -66,6 +66,7 @@ model User {
   eventRegistrations  EventRegistration[]
   sentMessages        Message[]            @relation("MessageSender")
   chatParticipants    ChatParticipant[]
+  post Post[]
   company Vacancy[]
 
   @@index([email])
@@ -180,3 +181,24 @@ model Vacancy {
   @@map("vacancys")
 }
 
+
+model Post {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  tags        String[]   // taglar: masalan ['frontend', 'internship']
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Plan {
+  id           String   @id @default(uuid())
+  name         String
+  price        Int
+  durationDays Int
+  features     Json
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
