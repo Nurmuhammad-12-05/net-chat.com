@@ -18,11 +18,11 @@ import { RoleGuard } from 'src/common/guard/role.guard';
 import { UpdateUserRoleDto } from './dto/update.user.role.dto';
 
 @Controller('/auth')
-@SetMetadata('isPublic', true)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
+  @SetMetadata('isPublic', true)
   async register(
     @Body() createRegisterDto: CreateRegisterDto,
     @Res({ passthrough: true }) res: Response,
@@ -32,6 +32,7 @@ export class AuthController {
     res.cookie('token', access_token, {
       maxAge: 168 * 3600 * 1000,
       httpOnly: true,
+      secure: false,
     });
 
     return {
@@ -41,6 +42,7 @@ export class AuthController {
   }
 
   @Post('/login')
+  @SetMetadata('isPublic', true)
   async login(
     @Body() createLoginDto: CreateLoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -50,15 +52,18 @@ export class AuthController {
     res.cookie('token', access_token, {
       maxAge: 168 * 3600 * 1000,
       httpOnly: true,
+      secure: false,
     });
 
     return { message: 'The system has been logged in.', access_token };
   }
 
   @Post('/logout')
+  @SetMetadata('isPublic', true)
   async logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('token', {
       httpOnly: true,
+      secure: false,
     });
 
     return { message: 'Logged out successfully' };
@@ -75,6 +80,7 @@ export class AuthController {
 
   @Put('/add-admin/:id')
   @UseGuards(RoleGuard)
+  @SetMetadata('isPublic', true)
   @SetMetadata('role', ['SUPERADMIN'])
   @SetMetadata('isAdmin', true)
   async updateUserRole(
