@@ -16,6 +16,7 @@ enum UserStatus {
 enum UserRole {
   USER
   ADMIN
+  COMPANY
   TUTOR
   SUPERADMIN
 }
