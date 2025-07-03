@@ -17,7 +17,7 @@ export class TutorController {
 
   @Put('update/:username')
   @UseGuards(RoleGuard, BlockGuard)
-  @SetMetadata('role', ['ADMIN', 'SUPERADMIN'])
+  @SetMetadata('role', ['ADMIN', 'SUPERADMIN', 'TUTOR'])
   async updateUserToTutor(@Param('username') username: string) {
     await this.tutorService.updateUserToTutor(username);
     return { message: 'update user role' };
