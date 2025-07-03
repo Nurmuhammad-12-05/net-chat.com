@@ -25,14 +25,14 @@ export class ChatController {
     return await this.chatService.getUserChats(userId);
   }
 
-  @Get(':id')
+  @Get('get/:id')
   async getChatById(@Param('id') id: string) {
     const chat = await this.chatService.getChatById(id);
 
     return chat;
   }
 
-  @Post()
+  @Post('/create-chat')
   @UseGuards(BlockGuard)
   async createChat(@Body() dto: CreateChatDto) {
     return await this.chatService.createChat(dto);

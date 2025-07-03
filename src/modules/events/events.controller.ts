@@ -26,38 +26,38 @@ export class EventsController {
     return await this.eventsService.getAllEvents(query);
   }
 
-  @Get('/:id')
+  @Get('get-event-by-id/:id')
   async getEventById(@Param('id') id: string) {
     const event = await this.eventsService.findOne(id);
 
     return { event };
   }
 
-  @Post()
+  @Post('create-events')
   async createEvent(@Body() dto: CreateEventDto, @Req() req: Request) {
     const userId = req['userId'];
 
     return await this.eventsService.create(dto, userId);
   }
 
-  @Put('/:id')
+  @Put('update-events/:id')
   async updateEvent(@Param('id') id: string, @Body() dto: UpdateEventDto) {
     return await this.eventsService.update(id, dto);
   }
 
-  @Delete('/:id')
+  @Delete('delete-events/:id')
   async deleteEvent(@Param('id') id: string) {
     return await this.eventsService.delete(id);
   }
 
-  @Post(':id/join')
+  @Post('join/:id')
   @UseGuards(BlockGuard)
   async joinEvent(@Param('id') eventId: string, @Req() req: Request) {
     const userId = req['userId'];
     return await this.eventsService.joinEvent(eventId, userId);
   }
 
-  @Delete(':id/leave')
+  @Delete('delete/:id/leave')
   @UseGuards(BlockGuard)
   async leaveEvent(@Param('id') eventId: string, @Req() req: Request) {
     const userId = req['userId'];

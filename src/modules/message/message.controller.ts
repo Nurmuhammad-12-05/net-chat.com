@@ -21,7 +21,7 @@ import { BlockGuard } from 'src/common/guard/block.guard';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @Get(':id/messages')
+  @Get('get/:id/messages')
   async getChatMessages(
     @Param('id') chatId: string,
     @Query() query: GetMessagesQueryDto,
@@ -29,7 +29,7 @@ export class MessageController {
     return await this.messageService.getMessagesByChatId(chatId, query);
   }
 
-  @Post(':id/messages')
+  @Post('create/:id/messages')
   @UseGuards(BlockGuard)
   async sendMessage(
     @Param('id') chatId: string,
@@ -40,7 +40,7 @@ export class MessageController {
     return await this.messageService.sendMessage(chatId, userId, dto);
   }
 
-  @Put(':id')
+  @Put('update/:id')
   @UseGuards(BlockGuard)
   async updateMessage(
     @Param('id') id: string,
@@ -51,7 +51,7 @@ export class MessageController {
     return await this.messageService.updateMessage(id, userId, dto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   @UseGuards(BlockGuard)
   async deleteMessage(@Param('id') id: string, @Req() req: Request) {
     const userId = req['userId'];

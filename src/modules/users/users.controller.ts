@@ -57,7 +57,7 @@ export class UsersController {
     return { users };
   }
 
-  @Get('/:id')
+  @Get('get-id/:id')
   async getOneUser(@Param('id') id: string, @Req() req: Request) {
     const userId = req['userId'];
 
@@ -68,7 +68,7 @@ export class UsersController {
     return { user };
   }
 
-  @Put('/:id')
+  @Put('update/:id')
   @UseGuards(BlockGuard)
   async updateUser(
     @Param('id') id: string,
@@ -108,7 +108,7 @@ export class UsersController {
     };
   }
 
-  @Post(':id/block')
+  @Post('create/:id/block')
   @UseGuards(RoleGuard)
   @SetMetadata('role', ['ADMIN', 'SUPERADMIN'])
   async blockUser(

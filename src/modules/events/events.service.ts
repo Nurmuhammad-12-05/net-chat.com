@@ -56,6 +56,11 @@ export class EventsService {
   }
 
   async create(createEventDto: CreateEventDto, userId: string) {
+    const findUser = await this.db.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!findUser) throw new ConflictException('User not found');
     return await this.db.prisma.event.create({
       data: {
         ...createEventDto,
@@ -93,8 +98,17 @@ export class EventsService {
     const event = await this.db.prisma.event.findUnique({
       where: { id: eventId },
     });
+
     if (!event) {
       throw new NotFoundException('Tadbir topilmadi');
+    }
+
+    const userID = await this.db.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!userID) {
+      throw new NotFoundException('User not found');
     }
 
     const alreadyJoined = await this.db.prisma.eventRegistration.findUnique({
@@ -102,6 +116,7 @@ export class EventsService {
         userId_eventId: { userId, eventId },
       },
     });
+
     if (alreadyJoined) {
       throw new ConflictException('Siz bu tadbirga allaqachon qo‘shilgansiz');
     }
@@ -130,6 +145,14 @@ export class EventsService {
 
     if (!event) {
       throw new NotFoundException('Tadbir topilmadi');
+    }
+
+    const userID = await this.db.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!userID) {
+      throw new NotFoundException('User not found');
     }
 
     const registration = await this.db.prisma.eventRegistration.findUnique({
