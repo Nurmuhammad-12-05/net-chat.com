@@ -9,6 +9,10 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthGuard } from './common/guard/auth.guard';
 import { AdminModule } from './modules/admin/admin.module';
 import TransformIntersector from './common/intersector/transform.intersector.service';
+import { PlanModule } from './modules/plan/plan.module';
+import { PostModule } from './modules/post/post.module';
+import { TutorModule } from './modules/tutor/tutor.module';
+import { VacansyModule } from './modules/vacansy/vacansy.module';
 
 @Module({
   imports: [
@@ -19,6 +23,10 @@ import TransformIntersector from './common/intersector/transform.intersector.ser
     ChatModule,
     MessageModule,
     AdminModule,
+    PlanModule,
+    PostModule,
+    TutorModule,
+    VacansyModule,
   ],
   providers: [
     {
