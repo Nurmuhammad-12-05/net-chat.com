@@ -229,3 +229,18 @@ model UserBlock {
 
   @@map("userBlock")
 }
+
+model ErrorLog {
+  id          String   @id @default(uuid())
+  message     String
+  errorType   String?
+  stack       String?
+  module      String?  
+  controller  String?  
+  service     String?  
+  route       String?
+  method      String?
+  createdAt   DateTime @default(now())
+
+  @@map("error_logs")
+}

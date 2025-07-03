@@ -13,6 +13,7 @@ import { PlanModule } from './modules/plan/plan.module';
 import { PostModule } from './modules/post/post.module';
 import { TutorModule } from './modules/tutor/tutor.module';
 import { VacansyModule } from './modules/vacansy/vacansy.module';
+import { ErrorLoggerService } from './common/services/error-logger.service';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { VacansyModule } from './modules/vacansy/vacansy.module';
     VacansyModule,
   ],
   providers: [
+    ErrorLoggerService,
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformIntersector,
@@ -38,5 +40,6 @@ import { VacansyModule } from './modules/vacansy/vacansy.module';
       useClass: AuthGuard,
     },
   ],
+  exports: [ErrorLoggerService],
 })
 export class AppModule {}
