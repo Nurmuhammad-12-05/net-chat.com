@@ -23,16 +23,18 @@ export class AuthGuard implements CanActivate {
 
     const classHendler = context.getClass();
 
-    const functionHendler = context.getHandler();
+    const classHandler = context.getClass();
 
-    const isPublic = this.reflector.getAllAndOverride('isPublic', [
-      classHendler,
-      functionHendler,
+    const functionHandler = context.getHandler();
+
+    const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
+      functionHandler,
+      classHandler,
     ]);
 
-    const isAdmin = this.reflector.getAllAndOverride('isPublic', [
-      classHendler,
-      functionHendler,
+    const isAdmin = this.reflector.getAllAndOverride<boolean>('isAdmin', [
+      functionHandler,
+      classHandler,
     ]);
 
     if (isPublic && !isAdmin) return true;
