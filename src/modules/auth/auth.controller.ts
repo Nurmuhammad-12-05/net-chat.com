@@ -32,7 +32,6 @@ export class AuthController {
     res.cookie('token', access_token, {
       maxAge: 168 * 3600 * 1000,
       httpOnly: true,
-      secure: true,
     });
 
     return {
@@ -51,7 +50,6 @@ export class AuthController {
     res.cookie('token', access_token, {
       maxAge: 168 * 3600 * 1000,
       httpOnly: true,
-      secure: true,
     });
 
     return { message: 'The system has been logged in.', access_token };
@@ -61,7 +59,6 @@ export class AuthController {
   async logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('token', {
       httpOnly: true,
-      secure: true,
     });
 
     return { message: 'Logged out successfully' };
