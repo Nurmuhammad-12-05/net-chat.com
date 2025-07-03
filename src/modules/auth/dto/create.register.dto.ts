@@ -14,11 +14,9 @@ export class CreateRegisterDto {
   @MinLength(5)
   name?: string;
 
-  @IsEmail()
   @IsString()
   email: string;
 
-  @IsStrongPassword()
   @IsString()
   password: string;
 
