@@ -66,8 +66,11 @@ model User {
   eventRegistrations  EventRegistration[]
   sentMessages        Message[]            @relation("MessageSender")
   chatParticipants    ChatParticipant[]
+  blockedRecords   UserBlock[] @relation("BlockedUser")
+  blockedByRecords UserBlock[] @relation("BlockAdmin")
   post Post[]
   company Vacancy[]
+
 
   @@index([email])
   @@index([username])
@@ -201,4 +204,20 @@ model Plan {
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model UserBlock {
+  id           String   @id @default(uuid())
+  userId       String   // kim bloklangan
+  blockedById  String   // kim tomonidan bloklangan (admin yoki superadmin)
+  reason       String?
+  blockedAt    DateTime @default(now())
+  unblockAt    DateTime // avtomatik unblock vaqti
+  isActive     Boolean  @default(true)
+
+  user         User     @relation("BlockedUser", fields: [userId], references: [id], onDelete: Cascade)
+  blockedBy    User     @relation("BlockAdmin", fields: [blockedById], references: [id])
+
+  @@index([userId])
+  @@index([isActive])
 }
