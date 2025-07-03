@@ -44,13 +44,7 @@ export class AuthController {
   }
 
   @Post('/logout')
-  @SetMetadata('isPublic', true)
-  async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('token', {
-      httpOnly: true,
-      secure: false,
-    });
-
+  async logout() {
     return { message: 'Logged out successfully' };
   }
 
