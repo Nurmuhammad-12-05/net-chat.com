@@ -23,10 +23,7 @@ export class AuthController {
 
   @Post('/register')
   @SetMetadata('isPublic', true)
-  async register(
-    @Body() createRegisterDto: CreateRegisterDto,
-    @Res() res: Response,
-  ) {
+  async register(@Body() createRegisterDto: CreateRegisterDto) {
     const access_token = await this.authService.register(createRegisterDto);
 
     return {
@@ -37,7 +34,7 @@ export class AuthController {
 
   @Post('/login')
   @SetMetadata('isPublic', true)
-  async login(@Body() createLoginDto: CreateLoginDto, @Res() res: Response) {
+  async login(@Body() createLoginDto: CreateLoginDto) {
     const access_token = await this.authService.login(createLoginDto);
 
     return { message: 'The system has been logged in.', access_token };
