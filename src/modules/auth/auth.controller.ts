@@ -25,15 +25,9 @@ export class AuthController {
   @SetMetadata('isPublic', true)
   async register(
     @Body() createRegisterDto: CreateRegisterDto,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
   ) {
     const access_token = await this.authService.register(createRegisterDto);
-
-    res.cookie('token', access_token, {
-      maxAge: 168 * 3600 * 1000,
-      httpOnly: true,
-      secure: false,
-    });
 
     return {
       message: 'The failure was registered in the system.',
@@ -43,17 +37,8 @@ export class AuthController {
 
   @Post('/login')
   @SetMetadata('isPublic', true)
-  async login(
-    @Body() createLoginDto: CreateLoginDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async login(@Body() createLoginDto: CreateLoginDto, @Res() res: Response) {
     const access_token = await this.authService.login(createLoginDto);
-
-    res.cookie('token', access_token, {
-      maxAge: 168 * 3600 * 1000,
-      httpOnly: true,
-      secure: false,
-    });
 
     return { message: 'The system has been logged in.', access_token };
   }

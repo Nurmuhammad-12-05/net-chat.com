@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -19,12 +18,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    const { token } = request.cookies;
-
-    const classHendler = context.getClass();
-
     const classHandler = context.getClass();
-
     const functionHandler = context.getHandler();
 
     const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
@@ -39,26 +33,25 @@ export class AuthGuard implements CanActivate {
 
     if (isPublic && !isAdmin) return true;
 
+    const authHeader = request.headers['authorization'];
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new BadRequestException(
+        'Authorization header missing or malformed',
+      );
+    }
+
+    const token = authHeader.split(' ')[1];
+
     try {
-      if (isAdmin) {
-        const { userId, role } = await this.jwtService.verifyAsync(token);
+      const { userId, role } = await this.jwtService.verifyAsync(token);
 
-        request.userId = userId;
+      request.userId = userId;
+      request.role = role;
 
-        request.role = role;
-
-        return true;
-      } else {
-        const { userId, role } = await this.jwtService.verifyAsync(token);
-
-        request.userId = userId;
-
-        request.role = role;
-
-        return true;
-      }
+      return true;
     } catch (error) {
-      throw new BadRequestException('Token invalide.!!');
+      throw new BadRequestException('Token is invalid!');
     }
   }
 }
