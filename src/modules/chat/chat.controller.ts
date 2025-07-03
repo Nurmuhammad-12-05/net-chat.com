@@ -7,11 +7,13 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { Request } from 'express';
 import { CreateChatDto } from './dto/create.chat.dto';
 import { GetMessagesQueryDto } from '../message/dto/get.messages.query.chat.dto';
+import { BlockGuard } from 'src/common/guard/block.guard';
 
 @Controller('/chat')
 export class ChatController {
@@ -31,6 +33,7 @@ export class ChatController {
   }
 
   @Post()
+  @UseGuards(BlockGuard)
   async createChat(@Body() dto: CreateChatDto) {
     return await this.chatService.createChat(dto);
   }

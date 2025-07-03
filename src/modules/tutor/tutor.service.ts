@@ -1,37 +1,47 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/core/database/database.service';
 
 @Injectable()
 export class TutorService {
-
-  constructor(private db: DatabaseService) { }
+  constructor(private db: DatabaseService) {}
 
   async updateUserToTutor(username: string) {
-    try {
-      const updateUserToTutor = await this.db.prisma.user.update({
-        where: {
-          username
-        },
-        data: {
-          role: 'TUTOR'
-        }
-      })
-      return updateUserToTutor
-    } catch (error) {
-      console.log(error);
+    const findUsername = await this.db.prisma.user.findUnique({
+      where: { username: username },
+    });
 
-    }
+    if (!findUsername) throw new ConflictException('username not found');
+
+    const updateUserToTutor = await this.db.prisma.user.update({
+      where: {
+        username,
+      },
+      data: {
+        role: 'TUTOR',
+      },
+    });
+    return updateUserToTutor;
   }
 
   async getAll() {
-    try {
-      return await this.db.prisma.user.findMany({
-        where: {
-          role: 'TUTOR'
-        }
-      })
-    } catch (error) {
-      console.log(error);
-    }
+    return await this.db.prisma.user.findMany({
+      where: {
+        role: 'TUTOR',
+      },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        avatar: true,
+        bio: true,
+        location: true,
+        isOnline: true,
+        lastSeen: true,
+        joinDate: true,
+        status: true,
+        skills: true,
+        tags: true,
+      },
+    });
   }
 }

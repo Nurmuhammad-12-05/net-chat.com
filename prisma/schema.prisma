@@ -142,6 +142,7 @@ model ChatParticipant {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([chatId, userId])
+
   @@map("chat_participants")
 }
 
@@ -176,6 +177,7 @@ model Vacancy {
   description String
   location    String
   salary      Int?
+  requirements String[]
   companyId   String
   company     User          @relation(fields: [companyId], references: [id])
   createdAt   DateTime      @default(now())
@@ -193,6 +195,8 @@ model Post {
   authorId    String
   author      User      @relation(fields: [authorId], references: [id])
   createdAt   DateTime @default(now())
+
+  @@map("posts")
 }
 
 model Plan {
@@ -204,15 +208,17 @@ model Plan {
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@map("plans")
 }
 
 model UserBlock {
   id           String   @id @default(uuid())
-  userId       String   // kim bloklangan
-  blockedById  String   // kim tomonidan bloklangan (admin yoki superadmin)
+  userId       String   
+  blockedById  String   
   reason       String?
   blockedAt    DateTime @default(now())
-  unblockAt    DateTime // avtomatik unblock vaqti
+  unblockAt    DateTime 
   isActive     Boolean  @default(true)
 
   user         User     @relation("BlockedUser", fields: [userId], references: [id], onDelete: Cascade)
@@ -220,4 +226,6 @@ model UserBlock {
 
   @@index([userId])
   @@index([isActive])
+
+  @@map("userBlock")
 }

@@ -19,12 +19,16 @@ import { SearchUserDto } from './dto/search.user.dto';
 import { S3Service } from 'src/core/storage/s3/s3.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SearchByUsernameDto } from './dto/search.by.user,dto';
+import { Cron } from '@nestjs/schedule';
+import { DatabaseService } from 'src/core/database/database.service';
+import { BlockGuard } from 'src/common/guard/block.guard';
 
 @Controller('/users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly s3Service: S3Service,
+    private readonly db: DatabaseService,
   ) {}
 
   @Get('/search')
@@ -35,6 +39,13 @@ export class UsersController {
   @Get('/username')
   async searchByUsername(@Query() query: SearchByUsernameDto) {
     return await this.usersService.searchByUsername(query);
+  }
+
+  @Get('/blocked-users')
+  @UseGuards(RoleGuard)
+  @SetMetadata('role', ['ADMIN', 'SUPERADMIN'])
+  async getBlockedUsers() {
+    return await this.usersService.getBlockedUsers();
   }
 
   @Get()
@@ -58,6 +69,7 @@ export class UsersController {
   }
 
   @Put('/:id')
+  @UseGuards(BlockGuard)
   async updateUser(
     @Param('id') id: string,
     @Body() dto: any,
@@ -78,6 +90,7 @@ export class UsersController {
   }
 
   @Post('/upload')
+  @UseGuards(BlockGuard)
   @UseInterceptors(FileInterceptor('avatar'))
   async uploadAvatar(
     @UploadedFile() file: Express.Multer.File,
@@ -93,5 +106,36 @@ export class UsersController {
       message: 'Avatar uploaded successfully',
       avatar: uploaded.url,
     };
+  }
+
+  @Post(':id/block')
+  @UseGuards(RoleGuard)
+  @SetMetadata('role', ['ADMIN', 'SUPERADMIN'])
+  async blockUser(
+    @Param('id') userId: string,
+    @Body() dto: { reason: string; unblockAt: Date },
+    @Req() req: Request,
+  ) {
+    const currentAdminId = req['userId'];
+
+    return await this.usersService.blockUser(userId, dto, currentAdminId);
+  }
+
+  @Post(':id/unblock')
+  @UseGuards(RoleGuard)
+  @SetMetadata('role', ['ADMIN', 'SUPERADMIN'])
+  async unblockUser(@Param('id') userId: string) {
+    return await this.usersService.unblockUser(userId);
+  }
+
+  @Cron('0 0 * * *')
+  async autoUnblockUsers() {
+    await this.db.prisma.userBlock.updateMany({
+      where: {
+        isActive: true,
+        unblockAt: { lte: new Date() },
+      },
+      data: { isActive: false },
+    });
   }
 }

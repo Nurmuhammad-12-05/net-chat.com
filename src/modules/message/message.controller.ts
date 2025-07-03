@@ -8,12 +8,14 @@ import {
   Put,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { GetMessagesQueryDto } from './dto/get.messages.query.chat.dto';
 import { Request } from 'express';
 import { CreateMessageDto } from './dto/create.message.dto';
 import { UpdateMessageDto } from './dto/update.message.dto';
+import { BlockGuard } from 'src/common/guard/block.guard';
 
 @Controller('/message')
 export class MessageController {
@@ -28,6 +30,7 @@ export class MessageController {
   }
 
   @Post(':id/messages')
+  @UseGuards(BlockGuard)
   async sendMessage(
     @Param('id') chatId: string,
     @Body() dto: CreateMessageDto,
@@ -38,6 +41,7 @@ export class MessageController {
   }
 
   @Put(':id')
+  @UseGuards(BlockGuard)
   async updateMessage(
     @Param('id') id: string,
     @Body() dto: UpdateMessageDto,
@@ -48,6 +52,7 @@ export class MessageController {
   }
 
   @Delete(':id')
+  @UseGuards(BlockGuard)
   async deleteMessage(@Param('id') id: string, @Req() req: Request) {
     const userId = req['userId'];
     return await this.messageService.deleteMessage(id, userId);

@@ -1,19 +1,28 @@
-import { IsBoolean, IsInt, IsJSON, IsString } from "class-validator";
+import {
+  IsString,
+  IsInt,
+  IsArray,
+  IsBoolean,
+  IsOptional,
+  ArrayMinSize,
+} from 'class-validator';
 
 export class PlanDto {
+  @IsString()
+  name: string;
 
-    @IsString()
-    name: string
+  @IsInt()
+  price: number;
 
-    @IsInt()
-    price: number
+  @IsInt()
+  durationDays: number;
 
-    @IsInt()
-    durationDays: number
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsString({ each: true })
+  features: string[];
 
-    @IsJSON()
-    features: []
-
-    @IsBoolean()
-    isActive: boolean
+  @IsBoolean()
+  @IsOptional()
+  isActive: boolean;
 }

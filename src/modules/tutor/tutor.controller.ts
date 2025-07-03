@@ -1,30 +1,30 @@
-import { Controller, Get, Param, Put, Query, SetMetadata, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Put,
+  Query,
+  SetMetadata,
+  UseGuards,
+} from '@nestjs/common';
 import { TutorService } from './tutor.service';
 import { RoleGuard } from 'src/common/guard/role.guard';
+import { BlockGuard } from 'src/common/guard/block.guard';
 
 @Controller('tutor')
 export class TutorController {
-  constructor(private readonly tutorService: TutorService) { }
-  
-  @Put('update')
-  @UseGuards(RoleGuard)
-  @SetMetadata('role',['ADMIN','SUPERADMIN'])
-  async updateUserToTutor(@Param('username') username:string) {
-    try {
-      await this.tutorService.updateUserToTutor(username)
-      return true
-    } catch (error) {
-      console.log(error);
-      
-    }
+  constructor(private readonly tutorService: TutorService) {}
+
+  @Put('update/:username')
+  @UseGuards(RoleGuard, BlockGuard)
+  @SetMetadata('role', ['ADMIN', 'SUPERADMIN'])
+  async updateUserToTutor(@Param('username') username: string) {
+    await this.tutorService.updateUserToTutor(username);
+    return { message: 'update user role' };
   }
 
   @Get('get-all')
   async getAll() {
-    try {
-      return await this.tutorService.getAll()
-    } catch (error) {
-      console.log(error);
-    }
+    return await this.tutorService.getAll();
   }
 }

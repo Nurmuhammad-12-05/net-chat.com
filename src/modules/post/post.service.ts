@@ -1,34 +1,45 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { DatabaseService } from 'src/core/database/database.service';
 
 @Injectable()
 export class PostService {
- 
-  constructor(private db: DatabaseService) { }
+  constructor(private db: DatabaseService) {}
 
   async createPost(user: string, createpostDto: CreatePostDto) {
-    try {
+    const findUserId = await this.db.prisma.user.findUnique({
+      where: { id: user },
+    });
 
-      const create = await this.db.prisma.post.create({
-        data: {
-          ...createpostDto,
-          authorId: user
-        }
-      })
+    if (!findUserId) throw new ConflictException('User id not found');
 
-      return create
-    } catch (error) {
-      console.log(error);
-    }
+    const create = await this.db.prisma.post.create({
+      data: {
+        ...createpostDto,
+        authorId: user,
+      },
+    });
+
+    return create;
   }
 
   async getPosts() {
-    try {
-      return await this.db.prisma.post.findMany()
-    } catch (error) {
-      console.log(error);
-      
-    }
+    return await this.db.prisma.post.findMany();
+  }
+
+  async getPostById(id: string) {
+    return this.db.prisma.post.findUnique({
+      where: { id },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true,
+            role: true,
+          },
+        },
+      },
+    });
   }
 }

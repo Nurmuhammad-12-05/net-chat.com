@@ -8,12 +8,14 @@ import {
   Put,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { GetEventsDto } from './dto/get.events.dto';
 import { CreateEventDto } from './dto/create.event.dto';
 import { UpdateEventDto } from './dto/update.event.dto';
 import { Request } from 'express';
+import { BlockGuard } from 'src/common/guard/block.guard';
 
 @Controller('events')
 export class EventsController {
@@ -47,12 +49,14 @@ export class EventsController {
   }
 
   @Post(':id/join')
+  @UseGuards(BlockGuard)
   async joinEvent(@Param('id') eventId: string, @Req() req: Request) {
     const userId = req['userId'];
     return await this.eventsService.joinEvent(eventId, userId);
   }
 
   @Delete(':id/leave')
+  @UseGuards(BlockGuard)
   async leaveEvent(@Param('id') eventId: string, @Req() req: Request) {
     const userId = req['userId'];
     return await this.eventsService.leaveEvent(eventId, userId);

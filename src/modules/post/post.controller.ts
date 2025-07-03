@@ -1,28 +1,40 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
+import { Request } from 'express';
+import { BlockGuard } from 'src/common/guard/block.guard';
 
 @Controller('post')
 export class PostController {
-  constructor(private readonly postService: PostService) { }
-  
+  constructor(private readonly postService: PostService) {}
+
   @Post('create')
-  async createPost(@Body() createpostDto: CreatePostDto) {
-    try {
-      const user = 'c404005d-0f4a-47ac-9029-cdd4011c6938'
-      return await this.postService.createPost(user,createpostDto)
-    } catch (error) {
-      console.log(error);
-    }
+  @UseGuards(BlockGuard)
+  async createPost(@Body() createpostDto: CreatePostDto, @Req() req: Request) {
+    const user = req['userId'];
+    return await this.postService.createPost(user, createpostDto);
   }
 
   @Get('get')
   async getPost() {
-    try {
-      return await this.postService.getPosts()
-    } catch (error) {
-      console.log(error);
-      
+    return await this.postService.getPosts();
+  }
+
+  @Get(':id')
+  async getPostById(@Param('id') id: string) {
+    const post = await this.postService.getPostById(id);
+    if (!post) {
+      throw new NotFoundException('Post topilmadi');
     }
+    return post;
   }
 }

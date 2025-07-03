@@ -196,6 +196,13 @@ export class UsersService {
     }
   }
 
+  async getBlockedUsers() {
+    return await this.db.prisma.userBlock.findMany({
+      where: { isActive: true },
+      include: { user: true, blockedBy: true },
+    });
+  }
+
   async getAllUsers() {
     const users = await this.db.prisma.user.findMany({
       select: {
@@ -307,5 +314,45 @@ export class UsersService {
       where: { id: userId },
       data: { avatar },
     });
+  }
+
+  async blockUser(
+    userId: string,
+    dto: { reason: string; unblockAt: Date },
+    blockedById: string,
+  ) {
+    const findUserId = await this.db.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!findUserId) throw new ConflictException('User id not found');
+
+    return await this.db.prisma.userBlock.create({
+      data: {
+        userId,
+        blockedById,
+        reason: dto.reason,
+        unblockAt: dto.unblockAt,
+      },
+    });
+  }
+
+  async unblockUser(userId: string) {
+    const findUserId = await this.db.prisma.userBlock.findFirst({
+      where: { userId: userId },
+    });
+
+    if (!findUserId) throw new ConflictException('User id not found');
+
+    await this.db.prisma.userBlock.updateMany({
+      where: { userId, isActive: true },
+      data: { isActive: false },
+    });
+
+    await this.db.prisma.userBlock.deleteMany({
+      where: { userId: userId, isActive: false },
+    });
+
+    return { message: 'User unblocked' };
   }
 }
