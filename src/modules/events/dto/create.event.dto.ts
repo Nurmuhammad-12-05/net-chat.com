@@ -1,10 +1,4 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsEnum,
-  IsDateString,
-  IsOptional,
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator';
 
 import { EventCategory, EventStatus } from '@prisma/client';
 
@@ -32,7 +26,4 @@ export class CreateEventDto {
   @IsOptional()
   @IsEnum(EventStatus)
   status?: EventStatus = EventStatus.ACTIVE;
-
-  @IsString()
-  organizerId: string;
 }

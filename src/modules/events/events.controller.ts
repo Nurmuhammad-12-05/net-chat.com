@@ -34,8 +34,10 @@ export class EventsController {
   }
 
   @Post()
-  async createEvent(@Body() dto: CreateEventDto) {
-    return await this.eventsService.create(dto);
+  async createEvent(@Body() dto: CreateEventDto, @Req() req: Request) {
+    const userId = req['userId'];
+
+    return await this.eventsService.create(dto, userId);
   }
 
   @Put('/:id')

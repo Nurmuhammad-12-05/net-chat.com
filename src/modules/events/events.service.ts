@@ -55,10 +55,11 @@ export class EventsService {
     return event;
   }
 
-  async create(createEventDto: CreateEventDto) {
+  async create(createEventDto: CreateEventDto, userId: string) {
     return await this.db.prisma.event.create({
       data: {
         ...createEventDto,
+        organizerId: userId,
       },
     });
   }
