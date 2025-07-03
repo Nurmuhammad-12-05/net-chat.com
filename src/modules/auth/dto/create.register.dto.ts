@@ -21,4 +21,20 @@ export class CreateRegisterDto {
   @IsStrongPassword()
   @IsString()
   password: string;
+
+  @IsString()
+  @IsOptional()
+  @MinLength(3)
+  @MaxLength(30)
+  username?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(100)
+  location?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(200)
+  bio?: string;
 }
