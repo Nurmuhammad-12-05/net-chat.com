@@ -20,6 +20,13 @@ export class AuthService {
 
     if (findEmail) throw new ConflictException('This email is registered.');
 
+    const findUsername = await this.db.prisma.user.findUnique({
+      where: { username: createRegisterDto.username },
+    });
+
+    if (findUsername)
+      throw new ConflictException('This username is registered.');
+
     const hashPassword = await bcrypt.hash(createRegisterDto.password, 12);
 
     const user = await this.db.prisma.user.create({
