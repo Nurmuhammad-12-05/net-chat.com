@@ -2,7 +2,7 @@
 CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'INACTIVE');
 
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN', 'SUPERADMIN');
+CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN', 'COMPANY', 'TUTOR', 'SUPERADMIN');
 
 -- CreateEnum
 CREATE TYPE "EventCategory" AS ENUM ('TECHNOLOGY', 'DESIGN', 'ENTREPRENEURSHIP', 'MARKETING', 'EDUCATION', 'NETWORKING');
@@ -19,7 +19,7 @@ CREATE TABLE "users" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "name" TEXT,
-    "username" TEXT NOT NULL,
+    "username" TEXT,
     "avatar" TEXT,
     "location" TEXT,
     "bio" TEXT,
@@ -100,6 +100,86 @@ CREATE TABLE "messages" (
     CONSTRAINT "messages_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "vacancys" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "location" TEXT NOT NULL,
+    "salary" INTEGER,
+    "requirements" TEXT[],
+    "companyId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "vacancys_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "posts" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "tags" TEXT[],
+    "authorId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "posts_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "plans" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "price" INTEGER NOT NULL,
+    "durationDays" INTEGER NOT NULL,
+    "features" JSONB NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "plans_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "userBlock" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "blockedById" TEXT NOT NULL,
+    "reason" TEXT,
+    "blockedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "unblockAt" TIMESTAMP(3) NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "userBlock_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "error_loges" (
+    "id" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
+    "errorType" TEXT,
+    "stack" TEXT,
+    "module" TEXT,
+    "controller" TEXT,
+    "service" TEXT,
+    "route" TEXT,
+    "method" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "error_loges_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "chat_ai" (
+    "id" TEXT NOT NULL,
+    "question" TEXT NOT NULL,
+    "answer" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "chat_ai_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
@@ -142,6 +222,12 @@ CREATE INDEX "messages_senderId_idx" ON "messages"("senderId");
 -- CreateIndex
 CREATE INDEX "messages_timestamp_idx" ON "messages"("timestamp");
 
+-- CreateIndex
+CREATE INDEX "userBlock_userId_idx" ON "userBlock"("userId");
+
+-- CreateIndex
+CREATE INDEX "userBlock_isActive_idx" ON "userBlock"("isActive");
+
 -- AddForeignKey
 ALTER TABLE "events" ADD CONSTRAINT "events_organizerId_fkey" FOREIGN KEY ("organizerId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -162,3 +248,15 @@ ALTER TABLE "messages" ADD CONSTRAINT "messages_chatId_fkey" FOREIGN KEY ("chatI
 
 -- AddForeignKey
 ALTER TABLE "messages" ADD CONSTRAINT "messages_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "vacancys" ADD CONSTRAINT "vacancys_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "posts" ADD CONSTRAINT "posts_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "userBlock" ADD CONSTRAINT "userBlock_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "userBlock" ADD CONSTRAINT "userBlock_blockedById_fkey" FOREIGN KEY ("blockedById") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
