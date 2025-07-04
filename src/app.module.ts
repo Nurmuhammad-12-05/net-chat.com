@@ -14,6 +14,7 @@ import { PostModule } from './modules/post/post.module';
 import { TutorModule } from './modules/tutor/tutor.module';
 import { VacansyModule } from './modules/vacansy/vacansy.module';
 import { ErrorLoggerService } from './common/services/error-logger.service';
+import { GroqModule } from './modules/grok/grok.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ErrorLoggerService } from './common/services/error-logger.service';
     PostModule,
     TutorModule,
     VacansyModule,
+    GroqModule,
   ],
   providers: [
     ErrorLoggerService,

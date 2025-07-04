@@ -244,3 +244,13 @@ model ErrorLog {
 
   @@map("error_loges")
 }
+
+
+model ChatAi {
+  id String @id @default(uuid())
+  question  String
+  answer String
+  createdAt DateTime @default(now())
+
+  @@map("chat_ai")
+}
