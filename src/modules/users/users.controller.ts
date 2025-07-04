@@ -69,7 +69,7 @@ export class UsersController {
     return { user };
   }
 
-  @Put('update/:id')
+  @Put('update')
   @UseGuards(BlockGuard)
   async updateUser(@Body() dto: any, @Req() req: Request) {
     const userId = req['userId'];
