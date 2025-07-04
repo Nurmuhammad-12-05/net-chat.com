@@ -203,29 +203,35 @@ export class UsersService {
     });
   }
 
-  async getAllUsers() {
+  async getAllUsers(skillsQuery?: string[] | string) {
+    let skillsFilter: any = undefined;
+
+    if (skillsQuery) {
+      const skills = Array.isArray(skillsQuery) ? skillsQuery : [skillsQuery];
+
+      skillsFilter = {
+        hasSome: skills,
+      };
+    }
+
     const users = await this.db.prisma.user.findMany({
+      where: {
+        skills: skillsFilter,
+      },
       select: {
         id: true,
         name: true,
-        bio: true,
-        tags: true,
         role: true,
-        email: true,
-        avatar: true,
-        skills: true,
-        status: true,
         location: true,
-        isOnline: true,
-        lastSeen: true,
-        joinDate: true,
-        createdAt: true,
-        updatedAt: true,
-        connections: true,
+        bio: true,
+        skills: true,
+        avatar: true,
       },
     });
 
-    if (!users) throw new ConflictException('Reference not found');
+    if (!users || users.length === 0) {
+      throw new ConflictException('Matching users not found');
+    }
 
     return users;
   }

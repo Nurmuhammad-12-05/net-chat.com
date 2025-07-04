@@ -51,12 +51,10 @@ export class UsersController {
   @Get()
   @UseGuards(RoleGuard)
   @SetMetadata('role', ['SUPERADMIN', 'ADMIN'])
-  async getAllUsers() {
-    const users = await this.usersService.getAllUsers();
-
+  async getAllUsers(@Query('skills') skills: string[] | string) {
+    const users = await this.usersService.getAllUsers(skills);
     return { users };
   }
-
   @Get('get-id/:id')
   async getOneUser(@Param('id') id: string, @Req() req: Request) {
     const userId = req['userId'];
