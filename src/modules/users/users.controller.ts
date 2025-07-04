@@ -49,8 +49,6 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(RoleGuard)
-  @SetMetadata('role', ['SUPERADMIN', 'ADMIN'])
   async getAllUsers(@Query('skills') skills: string[] | string) {
     const users = await this.usersService.getAllUsers(skills);
     return { users };
