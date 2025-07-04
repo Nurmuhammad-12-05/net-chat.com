@@ -242,5 +242,5 @@ model ErrorLog {
   method      String?
   createdAt   DateTime @default(now())
 
-  @@map("error_logs")
+  @@map("error_loges")
 }
