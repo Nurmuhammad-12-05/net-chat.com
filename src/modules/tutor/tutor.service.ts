@@ -30,11 +30,10 @@ export class TutorService {
       },
       select: {
         id: true,
+        avatar: true,
         name: true,
         username: true,
-        avatar: true,
         bio: true,
-        location: true,
         skills: true,
         tags: true,
       },
