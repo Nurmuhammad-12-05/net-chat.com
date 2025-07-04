@@ -307,6 +307,7 @@ export class UsersService {
       const selfDto = dto as UpdateUserSelfDto;
       Object.assign(data, {
         name: selfDto.name,
+        username: selfDto.username,
         bio: selfDto.bio,
         location: selfDto.location,
         skills: selfDto.skills,

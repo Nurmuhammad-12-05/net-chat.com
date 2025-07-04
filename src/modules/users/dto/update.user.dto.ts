@@ -8,6 +8,10 @@ export class UpdateUserSelfDto {
 
   @IsOptional()
   @IsString()
+  username?: string;
+
+  @IsOptional()
+  @IsString()
   bio?: string;
 
   @IsOptional()
