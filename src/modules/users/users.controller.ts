@@ -71,17 +71,12 @@ export class UsersController {
 
   @Put('update/:id')
   @UseGuards(BlockGuard)
-  async updateUser(
-    @Param('id') id: string,
-    @Body() dto: any,
-    @Req() req: Request,
-  ) {
+  async updateUser(@Body() dto: any, @Req() req: Request) {
     const userId = req['userId'];
 
     const userRole = req['role'];
 
     const updateUser = await this.usersService.updateUser(
-      id,
       dto,
       userId,
       userRole,

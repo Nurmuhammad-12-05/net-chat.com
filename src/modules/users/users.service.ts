@@ -288,18 +288,17 @@ export class UsersService {
   }
 
   async updateUser(
-    id: string,
     dto: UpdateUserSelfDto | UpdateUserByAdminDto,
     userId: string,
     userRole: string,
   ) {
     const findUser = await this.db.prisma.user.findUnique({
-      where: { id: id },
+      where: { id: userId },
     });
 
     if (!findUser) throw new ConflictException('User Id not found');
 
-    const isSelf = userId === id;
+    const isSelf = userId;
     const isAdmin = ['ADMIN', 'SUPERADMIN'].includes(userRole);
 
     const data: any = {};
@@ -308,7 +307,6 @@ export class UsersService {
       const selfDto = dto as UpdateUserSelfDto;
       Object.assign(data, {
         name: selfDto.name,
-        avatar: selfDto.avatar,
         bio: selfDto.bio,
         location: selfDto.location,
         skills: selfDto.skills,
@@ -324,7 +322,7 @@ export class UsersService {
     }
 
     await this.db.prisma.user.update({
-      where: { id },
+      where: { id: userId },
       data,
     });
 
