@@ -203,7 +203,23 @@ export class UsersService {
     });
   }
 
-  async getAllUsers(skillsQuery?: string[] | string) {
+  async getAllUsers() {
+    return await this.db.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        username: true,
+        location: true,
+        bio: true,
+        avatar: true,
+        skills: true,
+        tags: true,
+      },
+    });
+  }
+
+  async getSkillUsers(skillsQuery?: string[] | string) {
     let skillsFilter: any = undefined;
 
     if (skillsQuery) {

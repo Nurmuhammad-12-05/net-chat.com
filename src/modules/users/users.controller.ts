@@ -48,9 +48,14 @@ export class UsersController {
     return await this.usersService.getBlockedUsers();
   }
 
-  @Get()
-  async getAllUsers(@Query('skills') skills: string[] | string) {
-    const users = await this.usersService.getAllUsers(skills);
+  @Get('/all')
+  async getAllUsers() {
+    return await this.usersService.getAllUsers();
+  }
+
+  @Get('/skill')
+  async getSkillUsers(@Query('skills') skills: string[] | string) {
+    const users = await this.usersService.getSkillUsers(skills);
     return { users };
   }
   @Get('get-id/:id')
