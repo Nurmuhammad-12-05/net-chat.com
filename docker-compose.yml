@@ -25,8 +25,8 @@ services:
       - '80:80'
       - '443:443'
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./ssl:/etc/ssl
+      - ./nginx/nginx.conf:/nginx/nginx.conf:ro
+      - ./ssl:/ssl
 
   postgres:
     image: postgres:17.5
