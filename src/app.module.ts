@@ -15,6 +15,7 @@ import { TutorModule } from './modules/tutor/tutor.module';
 import { VacansyModule } from './modules/vacansy/vacansy.module';
 import { ErrorLoggerService } from './common/services/error-logger.service';
 import { GroqModule } from './modules/grok/grok.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { GroqModule } from './modules/grok/grok.module';
     VacansyModule,
     GroqModule,
   ],
+  controllers: [AppController],
   providers: [
     ErrorLoggerService,
     {
