@@ -6,3 +6,10 @@ COPY package*.json yarn.lock ./
 
 RUN yarn install --frozen-lockfile && yarn cache clean
 
+COPY . .
+
+RUN npx prisma generate 
+
+EXPOSE 4000
+
+RUN yarn build
