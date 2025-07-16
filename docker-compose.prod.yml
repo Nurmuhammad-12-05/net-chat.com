@@ -16,7 +16,8 @@ services:
     ports:
       - '8080:4000'
     depends_on:
-    restart: unless-stopped
+      postgres:
+        condition: service_healthy
 
   postgres:
     image: postgres:17.5
