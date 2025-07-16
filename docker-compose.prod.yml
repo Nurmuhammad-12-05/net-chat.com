@@ -16,7 +16,6 @@ services:
     ports:
       - '8080:4000'
     depends_on:
-      - postgres
     restart: unless-stopped
 
   postgres:
