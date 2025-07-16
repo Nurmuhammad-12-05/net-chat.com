@@ -5,11 +5,7 @@ services:
     build:
       context: .
     command:
-      [
-        'sh',
-        '-c',
-        'npx prisma migrate dev --name "first" && yarn build && yarn start:prod',
-      ]
+      ['sh', '-c', 'npx prisma migrate deploy && yarn build && yarn start:prod']
     environment:
       - JWT_KEY=${JWT_KEY}
       - DATABASE_URL=${DATABASE_DOCKER_URL}
