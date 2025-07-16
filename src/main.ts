@@ -14,7 +14,9 @@ async function bootstrap() {
       new ValidationPipe({ whitelist: true, transform: true }),
     );
 
-    app.enableCors();
+    app.enableCors({
+      origin: '*',
+    });
 
     const errorLogger = app.get(ErrorLoggerService);
     app.useGlobalFilters(new AppExceptionFilter(errorLogger));
